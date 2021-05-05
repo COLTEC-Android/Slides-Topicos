@@ -12,14 +12,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jemaf/slides.git"
+    "url": "git+https://github.com/coltec-android/slides-topicos.git"
   },
   "author": "João Eduardo Montandon",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/jemaf/slides/issues"
+    "url": "https://github.com/coltec-android/slides-topicos/issues"
   },
-  "homepage": "https://github.com/jemaf/slides#readme",
+  "homepage": "https://github.com/coltec-android/slides-topicos#readme",
   "dependencies": {
     "d3": "^4.12.2",
     "headjs": "^1.0.3",
