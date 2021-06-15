@@ -160,7 +160,7 @@
             @Override
             protected void onCreate(Bundle savedInstanceState) {                   
                 // ...
-                FragmentManager fm = getSupportFragmentManager();
+                FragmentManager fm = this.getSupportFragmentManager();
                 Fragment myFragment = fm.findFragmentById(R.id.fragment_my);
                 myFragment.algumMetodoQualquer();
                 
@@ -206,6 +206,79 @@
     </div>
 </section>
 
+<section data-background="img/04-fragments/exemplo-counter-fragment.gif" data-background-position="right" data-background-size="25%">
+    <div style="float: left; width: 50%;">
+        <h2>Exemplo: Contador</h2>
+    </div>
+</section>
+
 <section>
-    <h2>Exemplo: Listagem Detalhada</h2>
+    <h2>Passo 1: Criar Fragment</h2>
+    <pre data-file="fragment_counter.xml"><code data-trim data-noescape class="xml">
+        &lt;RelativeLayout ...&gt;
+            &lt;TextView ...
+            android:text="0"
+            android:id="@+id/txt_counter"/&gt;
+        &lt;/RelativeLayout&gt;
+    </code></pre>
+    <pre data-file="CounterFragment.java"><code data-trim data-noescape class="java">
+        public class CounterFragment extends Fragment {
+            private int count;
+
+            public CounterFragment() {
+                <mark>super(R.layout.fragment_counter);</mark>
+                this.count = 0;
+            }
+
+            public void increaseCounter() {
+                this.count++;
+                <mark>TextView txtCounter = this.getView().findViewById(R.id.txt_counter);</mark>
+                txtCounter.setText(count + "");
+            }
+        }
+    </code></pre>
+</section>
+
+<section>
+    <h2>Passo 2: Incluir Fragment na Activity</h2>
+    <pre data-file="fragment_counter.xml"><code data-trim data-noescape class="xml">
+        &lt;LinearLayout ...&gt;
+
+            &lt;<mark>androidx.fragment.app.FragmentContainerView</mark> ...
+                <mark>android:name="br.ufmg.coltec.exemplofragments.CounterFragment"</mark>
+                android:id="@+id/frag_top" /&gt;
+
+            &lt;<mark>androidx.fragment.app.FragmentContainerView</mark> ...
+                <mark>android:name="br.ufmg.coltec.exemplofragments.CounterFragment"</mark>
+                android:id="@+id/frag_bottom" /&gt;
+
+            &lt;!-- Botões --&gt;
+        &lt;/LinearLayout&gt;
+    </code></pre>
+    <pre data-file="CounterFragment.java"><code data-trim data-noescape class="java">
+        public class MainActivity extends FragmentActivity {
+            protected void onCreate(Bundle savedInstanceState) {
+                // ...
+                <mark>CounterFragment topFragment = (CounterFragment) this.getSupportFragmentManager().findFragmentById(R.id.frag_top);</mark>
+                <mark>Button topFragBtn = (Button) this.findViewById(R.id.btn_top_frag);</mark>
+
+                topFragBtn.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View view) {
+                        <mark>topFragment.increaseCounter();</mark>
+                    }
+                });
+                // ... mesma coisa para BotFragment ...
+            }
+        }
+    </code></pre>
+</section>
+
+
+<section class="reference">
+    <h2>Referência</h2>
+    <ul>
+        <li><a href="https://developer.android.com/guide/fragments">Android Guides: Fragments</a></li>
+        <li><a href="https://developer.android.com/codelabs/advanced-android-training-fragments#0">Android codelabs: Fragments</a></li>
+        <li><a href="https://www.tutlane.com/tutorial/android/android-fragments-with-examples">Tutlane: Android Fragments with Examples</a></li>
+    </ul>
 </section>
