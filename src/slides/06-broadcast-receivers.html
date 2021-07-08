@@ -1,0 +1,224 @@
+<section class="title" data-background="img/coltec.png" data-state="blur">
+    <h3>COLTEC/UFMG</h3>
+    <h1>Broadcast Receivers</h1>
+    <h3>João Eduardo Montandon</h3>
+</section>
+
+<section>
+    <h2>Introdução</h2>
+    <p>
+        Comunicação com serviços externos se dá por meio de mensagens.
+    </p>
+    <p>
+        Essas mensagens são encapsuladas em Intents.
+    </p>
+    <p>
+        <b>Às vezes, essas mensagens são geradas de forma autônoma pelo próprio sistema.</b>
+    </p>
+    <ul>
+        <li>Carregador conectado</li>
+        <li>Bateria baixa</li>
+        <li>Conectado a Internet</li>
+        <li>etc...</li>
+    </ul>
+    <div class="card" style="position: fixed; right: 5%; bottom: 20%; width: 10em; transform: rotate(7deg);">
+        Como interceptar essas mensagens?
+    </div>
+</section>
+
+<section>
+    <h2>O Modelo Publish/Subscribe</h2>
+    <p>
+        Padrão arquitetural onde um serviço central é responsável por <b>receber</b> eventos de determinados componentes (publishers), e <b>notificar</b> os componentes interessados nesses eventos (subscribers).
+    </p>
+    <a href="https://engsoftmoderna.info/cap7.html"><img data-src="img/06-broadcast-receivers/pubsub.svg"></a>
+</section>
+
+<section>
+    <h2>O Sistema de Broadcast</h2>
+    <img data-src="img/06-broadcast-receivers/broadcast-system.svg" alt="" srcset="">
+</section>
+
+<section>
+    <h2>Broadcast Receiver</h2>
+    <ul>
+        <li>Classe que permite às aplicações se registrarem no Broadcast system para interceptar mensagens</li>
+        <ul>
+            <li>Pode ser registrado de forma estática ou dinâmica</li>
+        </ul>
+        <li>São executadas em segundo plano</li>
+        <li><b>Objetivo:</b> interceptar mensagem sem que usuário perceba</li>
+    </ul>
+</section>
+
+<section>
+    <h2>Broadcast Receiver: Estático</h2>
+    <div>
+        <ol>
+            <li><b>(Pub)</b> Criar classe que extenda de <code>android.content.BroadcastReceiver</code></li>
+            <li><b>(Pub)</b> Implementar método <code>onReceive(Context, Intent)</code></li>
+            <li><b>(Pub)</b> Configurar arquivo <code>AndroidManifest.xml</code></li>
+            <li><b>(Sub)</b> Realizar o broadcast pelo método <code>sendBroadcast(Intent)</code></li>
+        </ol>
+    </div>
+    <div class="card" style="position: fixed; right: 15%; bottom: 10%; width: 10em; font-size: 3rem;">
+        <b>Como implementar?</b>
+    </div>
+</section>
+
+<section>
+    <h2>Hello, Receiver (1)</h2>
+    <p><b>Subscriber</b></p>
+    <pre data-file="HelloReceiver.java"><code data-trim data-noescape class="java">
+    import android.content.BroadcastReceiver;
+    public class HelloReceiver <mark>extends BroadcastReceiver</mark> {
+        @Override
+        public void <mark>onReceive(Context c, Intent intent)</mark> {
+            Log.d("HELLO_RECEIVER", "HelloReceiver!");
+        }
+    }
+    </code></pre>
+    <pre data-file="AndroidManifest.xml"><code data-trim data-noescape class="xml">
+        &lt;application...&gt;
+            ...
+            &lt;receiver android:name=".MyReceiver"&gt;
+                &lt;intent-filter&gt;
+                    &lt;action android:name="coltec.receiver.MY_RECEIVER" /&gt;
+                    &lt;category android:name="android.intent.category.DEFAULT" /&gt;
+                &lt;/intent-filter&gt;
+            &lt;/receiver&gt;
+        &lt;/application&gt;
+    </code></pre>
+</section>
+
+<section>
+    <h2>Hello, Receiver (2)</h2>
+    <p><b>Publisher</b></p>
+    <pre data-file="PublisherActivity.java"><code data-trim data-noescape class="java">
+        protected void onCreate(Bundle savedInstanceState) {
+            ...
+        
+            Button btnBroadcast = ...;
+            btnBroadcast.setOnClickListener(new View.OnClickListener() {
+                
+                public void onClick(View view) {
+                    <mark>Intent broadcastIntent = new Intent("coltec.receiver.MY_RECEIVER");</mark>
+                    <mark>sendBroadcast(broadcastIntent);</mark>
+                }
+            });
+        }
+    </code></pre>
+</section>
+
+<section>
+    <h2>Exemplo: Inicialização do Sistema</h2>
+    <ul>
+        <li><code>android.intent.action.BOOT_COMPLETED</code>: broadcast disparado quando SO é inicializado</li>
+        <li>Podemos criar um receiver para interceptar essa mensagem em nosso app!</li>
+    </ul>
+    <pre data-file="AndroidManifest.xml"><code data-trim data-noescape class="xml">
+        &lt;uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" /&gt;
+        ...
+        &lt;receiver android:name=".StartReceiver"&gt;
+            &lt;intent-filter&gt;
+                &lt;action android:name="android.intent.action.BOOT_COMPLETED" /&gt;
+                &lt;category android:name="android.intent.category.DEFAULT" /&gt;
+            &lt;/intent-filter&gt;
+        &lt;/receiver&gt;
+    </code></pre>
+    <div class="card red" style="position: fixed; right: 0%; top: 0%; width: 9em; transform: rotate(7deg);">
+        Restrito a partir da API 26 (Android 9)
+    </div>
+</section>
+
+<section>
+    <h2>Broadcast Receiver: Dinâmico</h2>
+    <div>
+        <ol start="3">
+            <li><b>(Pub)</b> Instanciar o <code>BroadcastReceiver</code> dentro da activity desejada</li>
+            <li><b>(Pub)</b> Instanciar o <code>IntentFilter</code> contendo as ações tratadas pelo receiver</li>
+            <li><b>(Pub)</b> Registrar o receiver</li>
+            <li><b>(Pub)</b> "Desregistrar" o receiver quando não é mais necessário</li>
+            <li><b>(Sub)</b> Realizar o broadcast pelo método <code>sendBroadcast(Intent)</code></li>
+        </ol>
+    </div>
+    <p>
+        <b>OBS: O receiver estará atrelado ao ciclo de vida do contexto (Activity) no qual ele foi criado!!</b>
+    </p>
+</section>
+
+<section>
+    <h2>Exemplo: Monitorando Bateria</h2>
+    <pre data-file="MainActivity.java"><code data-trim data-noescape class="java" style="max-height: 100%;">
+public class MainActivity extends AppCompatActivity {
+    // Cria o receiver atrelado a Activity que irá registrá-lo
+    private BroadcastReceiver batteryReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d("BATTERY_RECEIVER", "bateria fraca!");
+            Toast.makeText(context, "Bateria fraca!", Toast.LENGTH_LONG).show();
+        }
+    };
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        // ... Registra o receiver para tratar a mensagem de bateria
+        IntentFilter filter = new IntentFilter(Intent.ACTION_BATTERY_LOW);
+        this.registerReceiver(this.batteryReceiver, filter);
+    }
+
+    @Override
+    protected void onDestroy() {
+        // ... desregistra o receiver
+        unregisterReceiver(this.batteryReceiver);
+    }
+}
+    </code></pre>
+</section>
+
+<section>
+    <h2>Ciclo de Vida</h2>
+    <ul>
+        <li>Encerrado automaticamente após a chamada ao método <code>onReceive(context, intent)</code></li>
+        <li>Código presente no receiver deve executar brevemente</li>
+        <ul>
+            <li>Prazo máximo de 10 segundos, caso contrário ele será abortado pelo SO (application not responding)</li>
+        </ul>
+    </ul>
+</section>
+
+<section>
+    <h2>Receivers &amp; Services</h2>
+    <ul>
+        <li>Os receivers não podem executar tarefas muito longas (máx 10 segundos!)</li>
+        <li>Contudo, ainda existem cenários que são tratados por um receiver, porém executa tarefas demoradas</li>
+        <ul>
+            <li>Backup de informações</li>
+            <li>Conexão a um serviço web</li>
+        </ul>
+        <li><b>Solução:</b> delegar essa tarefa para um agente externo &#8594; <a href="https://developer.android.com/guide/components/services">Services</a></li>
+    </ul>
+</section>
+
+<section>
+    <h2>Receivers &amp; Notificações</h2>
+    <ul>
+        <li>Um receiver tem como objetivo interceptar um evento do sistema</li>
+        <li>Essa interceptação não envolve interagir com usuário</li>
+        <ul>
+            <li>Não sabemos quando o evento será interceptado</li>
+            <li>O momento pode ser inconveniente</li>
+            <li><b>Um receiver não deve atrapalhar o usuário!</b></li>
+        </ul>
+        <li><b>Solução:</b> delegar essa tarefa para um agente externo &#8594; <a href="https://developer.android.com/guide/topics/ui/notifiers/notifications">Notifications</a></li>
+    </ul>
+</section>
+
+
+<section class="reference">
+    <h2>Referências</h2>
+    <ul>
+        <li><a href="https://developer.android.com/guide/components/broadcasts">Android Guides: Broadcasts Overview</a></li>
+        <li><a href="https://www.geeksforgeeks.org/broadcast-receiver-in-android-with-example/">Geeks for Geeks: BroadcastReceiver in Android with example</a></li>
+    </ul>
+</section>
