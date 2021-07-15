@@ -1,0 +1,284 @@
+<section class="title" data-background="img/coltec.png" data-state="blur">
+    <h3>COLTEC/UFMG</h3>
+    <h1>Fragments: Introdução</h1>
+    <h3>João Eduardo Montandon</h3>
+</section>
+
+
+<section data-background="img/04-fragments/honeycomb-logo.png" data-background-size="50%">
+</section>
+
+<section data-background="img/04-fragments/moto-xoom.png" data-background-size="45%" data-background-position="right">
+    <div style="float: left; max-width: 55%;">
+        <h2>Onde tudo começou...</h2>
+        <ul>
+            <li>Uso de tablets cada vez mais popular</li>
+            <li>Necessidade de otimizar o Android para telas maiores</li>
+            <li>Activity: Controla toda a lógica da tela</li>
+        </ul>
+        <p>
+            <b>Mas e se a mesma tela processar mais de uma lógica?</b>
+        </p>
+    </div>
+</section>
+
+<section>
+    <h2>Fragments</h2>
+    <ul>
+        <li>API lançada no Android 3.0 Honeycomb</li>
+        <li><b>Objetivo:</b> Permitir a criação de componentes reutilizáveis e com lógica própria, independente da View principal</li>
+        <li><b>Por que?</b> Aproveitar ao máximo o tamanho da tela disponibilizado pelos tablets</li>
+    </ul>
+</section>
+
+<section>
+    <h2>Fragments: Características</h2>
+    <ol>
+        <li>Componentes são reutilizáveis</li>
+        <li>Processamento independente em relação ao restante da tela</li>
+        <li>Encapsula sua própria lógica de funcionamento</li>
+    </ol>
+    <p>
+        Um <b>fragment</b> é uma espécie de <b>miniactivity</b>: possui interface e lógica próprias. 
+    </p>
+</section>
+
+<section>
+    <h2>Fragments: Exemplo</h2>
+    <div>
+        <img style="float: left; width: 48%;" data-src="img/04-fragments/fragment-example.png" alt="">
+    </div>
+    <div>
+        <img style="float: right; width: 48%;" data-src="img/04-fragments/gmail-tablet.png" alt="">
+    </div>
+</section>
+
+<section>
+    <h2>Fragments API</h2>
+    <table>
+        <tr>
+            <td><b>Classe</b></td>
+            <td><b>Propósito</b></td>
+        </tr>
+        <tr>
+            <td><code>android.app.Fragment</code></td>
+            <td>Classe que o fragment a ser criado deve estender. Necessário sempre sobrescrever o método <code>onCreateView(inflater, container, bundle).</code></td>
+        </tr>
+        <tr>
+            <td><code>android.app.FragmentManager</code></td>
+            <td>Classe que gerencia os fragments dentro do app. Apresenta métodos como <code>findFragmentById(id)</code> e <code>findFragmentByTag(tag).</code></td>
+        </tr>
+        <tr>
+            <td><code>android.app.FragmentTransaction</code></td>
+            <td>Classe auxiliar utilizada para adicionar, remover ou substituir fragments dinamincamente.</td>
+        </tr>
+    </table>
+</section>
+
+<section>
+    <h2>Setup</h2>
+    <p>
+        A API de fragments não vem disponibilizada por padrão. É preciso importá-la explicitamente dentro do projeto.
+    </p>
+
+    <pre data-file="build.gradle"><code data-trim data-noescape>
+        dependencies {
+            def fragment_version = "1.3.4"
+
+            ...
+            implementation "androidx.fragment:fragment:$fragment_version"
+            ...
+        }
+    </code></pre>
+</section>
+
+<section>
+    <h2>Hello, Fragment!</h2>
+    <pre data-file="fragment_my.xml"><code data-trim data-noescape class="xml">
+        &lt;FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"&gt;
+            
+            &lt;TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Hello, Fragment!"/&gt;    
+        &lt;/FrameLayout&gt;
+    </code></pre>
+
+    <pre data-file="MyFragment.java"><code data-trim data-noescape class="java">
+        public class MyFragment <mark>extends Fragment</mark> {
+        
+            public MyFragment() {
+                <mark>super(R.layout.fragment_my);</mark>
+            }
+        }
+    </code></pre>
+</section>
+
+<section>
+    <h2>Hello, Fragment!</h2>
+    <pre data-file="activity_main.xml"><code data-trim data-noescape class="xml">
+        &lt;FrameLayout ...&gt;
+
+            &lt;<mark>androidx.fragment.app.FragmentContainerView</mark>
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                <mark>android:name="br.ufmg.coltec.exemplofragment.MyFragment"</mark>
+                tools:layout="@layout/fragment_my" /&gt;
+
+        &lt;/FrameLayout&gt;
+    </code></pre>
+    <pre data-file="MainActivity.java"><code data-trim data-noescape class="java">
+        public class MainActivity <mark>extends FragmentActivity</mark> {
+            @Override
+            protected void onCreate(Bundle savedInstanceState) {
+                super.onCreate(savedInstanceState);
+                setContentView(R.layout.activity_main);
+                
+                // ...
+            }
+        }
+    </code></pre>
+</section>
+
+<section>
+    <h2>A Classe <code>FragmentManager</code></h2>
+    <ul>
+        <li>Classe responsável por manipular dinamicamente um fragment em nosso app</li>
+        <li>disponível por meio do método <code>getSupportFragmentManager()</code></li>
+        <li>Alterações devem ser realizadas por meio de um <code>FragmentTransaction</code></li>
+        <li>Exemplo: adicionar, substituir e/ou remover um fragment de uma tela</li>
+    </ul>
+</section>
+
+<section>
+    <h2><code>FragmentManager</code> - Exemplo</h2>
+    <pre data-file="MainActivity.java"><code data-trim data-noescape class="java">
+        public class MainActivity extends FragmentActivity {
+            @Override
+            protected void onCreate(Bundle savedInstanceState) {                   
+                // ...
+                FragmentManager fm = this.getSupportFragmentManager();
+                Fragment myFragment = fm.findFragmentById(R.id.fragment_my);
+                myFragment.algumMetodoQualquer();
+                
+            }
+        }
+    </code></pre>
+</section>
+
+<section>
+    <h2><code>FragmentTransaction</code> - Exemplo</h2>
+    <p>Utilizada quando desejamos manipular fragments em uma Activity.</p>
+    <pre data-file="activity_main.xml"><code data-trim data-noescape class="xml">
+        &lt;FrameLayout ... android:id="@+id/activity_main_layout"&gt;
+
+            &lt;!-- ... Restante da tela... --&gt;
+
+        &lt;/FrameLayout&gt;
+    </code></pre>
+    <pre data-file="MainActivity.java"><code data-trim data-noescape class="java">
+        public class MainActivity extends FragmentActivity {
+            @Override
+            protected void onCreate(Bundle savedInstanceState) {                   
+                // ...
+                FragmentManager fm = getSupportFragmentManager();
+
+                FragmentTransaction ft = fm.beginTransaction();
+                Fragment newFragment = new MyFragment();
+                ft.add(R.id.activity_main_layout, newFragment);
+                ft.commit();
+            }
+        }
+    </code></pre>
+</section>
+
+<section data-background="img/04-fragments/fragment-lifecycle.png" data-background-position="right" data-background-size="45%">
+    <div style="float: left; width: 50%;">
+        <h2>Fragments: Ciclo de Vida</h2>
+        <ul>
+            <li>Cada fragmento tem seu ciclo de vida próprio</li>
+            <li>Ciclo de vida similar ao de uma activity, porém com algumas particularidades: <code>onViewCreated()</code></li>
+            <li>Os estados do ciclo de vida estão atrelados diretamente a view que o contém</li>
+        </ul>
+    </div>
+</section>
+
+<section data-background="img/04-fragments/exemplo-counter-fragment.gif" data-background-position="right" data-background-size="25%">
+    <div style="float: left; width: 50%;">
+        <h2>Exemplo: Contador</h2>
+    </div>
+</section>
+
+<section>
+    <h2>Passo 1: Criar Fragment</h2>
+    <pre data-file="fragment_counter.xml"><code data-trim data-noescape class="xml">
+        &lt;RelativeLayout ...&gt;
+            &lt;TextView ...
+            android:text="0"
+            android:id="@+id/txt_counter"/&gt;
+        &lt;/RelativeLayout&gt;
+    </code></pre>
+    <pre data-file="CounterFragment.java"><code data-trim data-noescape class="java">
+        public class CounterFragment extends Fragment {
+            private int count;
+
+            public CounterFragment() {
+                <mark>super(R.layout.fragment_counter);</mark>
+                this.count = 0;
+            }
+
+            public void increaseCounter() {
+                this.count++;
+                <mark>TextView txtCounter = this.getView().findViewById(R.id.txt_counter);</mark>
+                txtCounter.setText(count + "");
+            }
+        }
+    </code></pre>
+</section>
+
+<section>
+    <h2>Passo 2: Incluir Fragment na Activity</h2>
+    <pre data-file="fragment_counter.xml"><code data-trim data-noescape class="xml">
+        &lt;LinearLayout ...&gt;
+
+            &lt;<mark>androidx.fragment.app.FragmentContainerView</mark> ...
+                <mark>android:name="br.ufmg.coltec.exemplofragments.CounterFragment"</mark>
+                android:id="@+id/frag_top" /&gt;
+
+            &lt;<mark>androidx.fragment.app.FragmentContainerView</mark> ...
+                <mark>android:name="br.ufmg.coltec.exemplofragments.CounterFragment"</mark>
+                android:id="@+id/frag_bottom" /&gt;
+
+            &lt;!-- Botões --&gt;
+        &lt;/LinearLayout&gt;
+    </code></pre>
+    <pre data-file="CounterFragment.java"><code data-trim data-noescape class="java">
+        public class MainActivity extends FragmentActivity {
+            protected void onCreate(Bundle savedInstanceState) {
+                // ...
+                <mark>CounterFragment topFragment = (CounterFragment) this.getSupportFragmentManager().findFragmentById(R.id.frag_top);</mark>
+                <mark>Button topFragBtn = (Button) this.findViewById(R.id.btn_top_frag);</mark>
+
+                topFragBtn.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View view) {
+                        <mark>topFragment.increaseCounter();</mark>
+                    }
+                });
+                // ... mesma coisa para BotFragment ...
+            }
+        }
+    </code></pre>
+</section>
+
+
+<section class="reference">
+    <h2>Referência</h2>
+    <ul>
+        <li><a href="https://developer.android.com/guide/fragments">Android Guides: Fragments</a></li>
+        <li><a href="https://developer.android.com/codelabs/advanced-android-training-fragments#0">Android codelabs: Fragments</a></li>
+        <li><a href="https://www.tutlane.com/tutorial/android/android-fragments-with-examples">Tutlane: Android Fragments with Examples</a></li>
+    </ul>
+</section>

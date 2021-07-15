@@ -1,0 +1,276 @@
+<section class="title" data-background="img/coltec.png" data-state="blur">
+    <h3>COLTEC/UFMG</h3>
+    <h1>Processos de Background</h1>
+    <h3>João Eduardo Montandon</h3>
+</section>
+
+<section>
+    <h2>Fluxo de Execução</h2>
+    <ul>
+        <li>Todo programa é composto por um fluxo de execução (<code>main</code>)</li>
+        <li>O fluxo executa <b>uma instrução</b> por vez</li>
+    </ul>
+</section>
+
+<section>
+    <h2>Fluxo de Execução</h2>
+    <p>
+        Mas e se a instrução demorar muito tempo para executar?
+    </p>
+    <img data-src="./img/05-background-task/app-freeze-example.gif" alt="">
+</section>
+
+<section data-background="img/05-background-task/exemplo-fluxo-execucao.svg" data-background-size="25%" data-background-position="right" data-state="light">
+    <h2>Background Tasks</h2>
+    <p>
+        <b>Princípio básico:</b> Se alguma tarefa demorar mais do que alguns milisegundos, ela deve ser implementada em alguma tarefa de background.
+    </p>
+    <p>
+        Alguns Exemplos:
+    </p>
+    <ul>
+        <li>Downloads</li>
+        <li>Comunicação com web servers</li>
+        <li>Consulta a banco de dados</li>
+    </ul>
+</section>
+
+<section>
+    <h2>Background Tasks</h2>
+    <p>Em Android, pode ser implementada utilizando os seguintes recuros</p>
+
+    <table>
+        <tr>
+            <td><b>Recurso</b></td>
+            <td><b>Descrição</b></td>
+        </tr>
+        <tr>
+            <td><b>Threads</b></td>
+            <td>Mecanismo de Threads tradicional presente na linguagem Java. Pode ser implementada por meio das classes <code>Thread</code> e <code>Runnable</code>.</td>
+        </tr>
+        <tr>
+            <td><b>Handlers</b></td>
+            <td>Classe especial do Android que permite que a thread acesse componentes da interface gráfica do aplicativo (método <code>runOnUiThread(Runnable)</code>).</td>
+        </tr>
+        <tr>
+            <td><b>AsyncTask</b></td>
+            <td>Biblioteca auxiliar para gerenciamento de threads no Android. <i>Deprecated a partir da API 30 (Android R)</i>.</td>
+        </tr>
+        <tr>
+            <td><b>Executors</b></td>
+            <td>Conjunto de classes que facilita o gerenciamento e execução de threads no aplicativo.</td>
+        </tr>
+    </table>
+</section>
+
+<section>
+    <h2>Threads</h2>
+</section>
+
+<section>
+    <div style="float: left; width: 60%">
+        <h2>Threads</h2>
+        <p>
+            <b>Fluxo de execução alternativo gerado a partir do processo responsável pelo próprio programa.</b>
+        </p>
+        <ul>
+            <li>Recurso a nível de linguagem de programação</li>
+            <li>Um processo se divide em vários fluxos, podendo ser executados alternativamente pelo SO</li>
+            <li>Sensação de paralelismo para o usuário</li>
+            <li>Em Java, representados pela classe <code>Thread</code> e <code>Runnable</code></li>
+        </ul>
+    </div>
+    <div style="width: 40%; float: right;">
+        <img data-src="./img/05-background-task/exemplo-threads.png" alt="">
+        <div>
+            <a href="https://coderef.com.br/kotlin-coroutines-o-que-s%C3%A3o-f9375c314480">Fonte</a>
+        </div>
+    </div>
+</section>
+
+<section>
+    <h2>Threads: Exemplo</h2>
+    <pre><code data-trim data-noescape class="java">
+        Thread t = new Thread() {
+            public void run() {
+                // Tarefa de background aqui
+            }
+        };
+        t.start(); // inicializa execução da thread
+    </code></pre>
+</section>
+
+<section>
+    <h2>Threads &amp; Android</h2>
+    <ul>
+        <li><b>UI Thread:</b> Thread-padrão responsável pela execução da aplicação</li>
+        <li>Inicializada sempre que o processo responsável pela aplicação é criado</li>
+        <li><b>Única com permissão para manipular a interface gráfica da aplicação</b></li>
+    </ul>
+</section>
+
+<section>
+    <h2>Threads &amp; Android</h2>
+    <pre><code data-trim data-noescape class="java">
+        <mark>TextView lblTimer = findViewById(R.id.lbl_timer);</mark>
+        Thread thread = new Thread() {
+            public void run() {
+                for(int i = 0; i <= 10; i++) {
+                    try {
+                        <mark>lblTimer.setText(i + " segundos");</mark>
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        };
+        thread.start();
+    </code></pre>
+    <img style="max-width: 90%;" data-src="./img/05-background-task/threads-ui-exception.png" alt="">
+</section>
+
+<section>
+    <h2>Handlers</h2>
+</section>
+
+<section>
+    <h2>Handlers</h2>
+    <ul>
+        <li><b>Objetivo:</b> fornecer métodos para interagir com a thread principal do aplicativo Android</li>
+        <li>Se comunica com a thread principal por meio de fila de mensagens <sub style="font-size: 0.6em;"><a href="https://engsoftmoderna.info/cap7.html">(7.5)</a></sub></li>
+        <li>Permite manipular GUI por meio do método <code>runOnUiThread()</code></li>
+    </ul>
+</section>
+
+<section>
+    <h2>Handlers: Exemplo <code>runOnUiThread</code></h2>
+    <div style="float:left; width: 75%;">
+        <pre><code data-trim data-noescape class="java" style="max-height: 100%;">
+            Thread thread = new Thread() {
+                public void run() {
+                    for(int i = 0; i <= 10; i++) {
+                        try {
+                            int currentTimer = i;
+                            Thread.sleep(1000);
+                            <mark>runOnUiThread(new Runnable() {</mark>
+                                <mark>public void run() {</mark>
+                                    <mark>lblTimer.setText(currentTimer + " segundos");</mark>
+                                <mark>}</mark>
+                            <mark>});</mark>
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            };
+            thread.start();
+        </code></pre>
+    </div>
+    <div style="float:right; width: 25%;">
+        <img data-src="./img/05-background-task/app-runonuithread.gif" alt="">
+    </div>
+</section>
+
+<section>
+    <h2>Handlers</h2>
+    <p>
+        Além disso, é possível agendar a execução de tarefas assíncronas por meio de handlers:
+    </p>
+    <table>
+        <tr>
+            <td><b>Método</b></td>
+            <td><b>Descrição</b></td>
+        </tr>
+        <tr>
+            <td><code>post(Runnable)</code></td>
+            <td>Adiciona uma thread a fila de mensagens para ser processada quando possível.</td>
+        </tr>
+        <tr>
+            <td><code>sendMessage(Message)</code></td>
+            <td>
+                Envia uma mensagem para ser processada na fila de mensagens quando possível. 
+                Deve-se configurar atributo <code>Message.what</code> e criar uma classe auxiliar que herde de <code>Handler</code> para tratar a mensagem.
+            </td>
+        </tr>
+        <tr>
+            <td><code>sendMessageDelayed(Message, long)</code></td>
+            <td>
+                Envia uma mensagem para ser processada somente depois do tempo informado. 
+                Deve-se configurar atributo <code>Message.what</code> e implementar a subclasse <code>Handler</code> auxiliar.
+            </td>
+        </tr>
+        <tr>
+            <td><code>sendMessageAtTime(Message, long)</code></td>
+            <td>
+                Envia uma mensagem para ser processada exatamente no tepmo informado.
+                Deve-se configurar atributo <code>Message.what</code> e implementar a subclasse <code>Handler</code> auxiliar.
+            </td>
+        </tr>
+    </table>
+</section>
+
+<section>
+    <h2>Handlers: Exemplo <code>sendMessage</code> (1)</h2>
+    <pre data-file="MyHandler.java"><code data-trim data-noescape class="java" style="max-height: fit-content;">
+        public class MyHandler extends Handler {
+        
+            public static final int CODE_OK = 1;
+            public static final int CODE_CANCEL = 2;
+            
+            private Context context;
+            
+            public MyHandler(Context context) {
+                this.context = context;
+            }
+            
+            @Override
+            <mark>public void handleMessage(Message msg)</mark> {
+                switch (msg.what) {
+                    case CODE_OK:
+                        Toast.makeText(this.context, "Status OK!", Toast.LENGTH_SHORT).show();
+                        break;
+                    case CODE_CANCEL:
+                        Toast.makeText(this.context, "Status inválido!!", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+        }
+    </code></pre>
+</section>
+
+<section>
+    <h2>Handlers: Exemplo <code>sendMessage</code> (2)</h2>
+    <div style="float: left; width: 75%;">
+        <pre data-file="MainActivity.java"><code data-trim data-noescape class="java" style="max-height: fit-content;">
+            protected void onCreate(Bundle savedInstanceState) {
+                ...
+                
+                <mark>MyHandler handler = new MyHandler(this.getBaseContext());</mark>
+                Button btnSend = findViewById(R.id.btn_send_message);
+                
+                btnSend.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View view) {
+                        // cria mensagem com status de ok
+                        Message okMessage = new Message();
+                        <mark>okMessage.what = MyHandler.CODE_OK;</mark>
+                        
+                        // agenda mensagem para ser enfileirada 3 segundos depois
+                        <mark>handler.sendMessageDelayed(okMessage, 3000);</mark>
+                    }
+                });
+            }
+    </div>
+    </code></pre>
+    <div style="float: right; width: 25%;">
+        <img data-src="./img/05-background-task/app-sendmessagedelayed.gif" alt="">
+    </div>
+</section>
+
+<section class="reference">
+    <h2>Referências</h2>
+    <ul>
+        <li><a href="https://developer.android.com/guide/background/threading">Android Guides: Running Android tasks in background threads</a></li>
+        <li><a href="https://academy.realm.io/posts/360andev-stacy-devino-async-tasks-threads-pools-executors-android/">Academy Realm: Async Tasks, Threads, Pools, and Executors</a></li>
+    </ul>
+</section>

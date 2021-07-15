@@ -1,0 +1,369 @@
+<section class="title" data-background="img/coltec.png" data-state="blur">
+    <h3>COLTEC/UFMG</h3>
+    <h1>Gradle: Uma Introdução</h1>
+    <h3>João Eduardo Montandon</h3>
+</section>
+
+<section>
+    <blockquote>
+        Software work is the most complex that humanity has ever undertaken.
+        <footer>Fred Brooks</footer>
+    </blockquote>
+</section>
+
+<section>
+    <h2>Os sistemas reais...</h2>
+    <ul>
+        <li>São inovadores</li>
+        <li>São complexos</li>
+        <li>São grandes</li>
+        <li>Utilizam diversos recuros</li>
+        <li>Resolvem problemas importantes</li>
+        <li>Perduram por "eras"</li>
+    </ul>
+</section>
+
+<section>
+    <div style="display: flex; justify-content: center; align-items: center;">
+        <div>
+            <h2>Os sistemas reais...</h2>
+            <ul>
+                <li><a href="https://www.wired.com/2015/09/google-2-billion-lines-codeand-one-place/">Google:</a> 2BLOC</li>
+                <li><a href="https://github.com/github/linux">Linux kernel:</a> desde 1992</li>
+                <li><a href="https://github.com/android">Android:</a> 55 repositórios</li>
+            </ul>
+        </div>
+        <div style="width: 30%; margin-left: 10%">
+            <a href="https://github.com/chrislgarry/Apollo-11/">
+                <img data-src="./img/07-gradle/margaret_hamilton.jpg" alt="">
+            </a>
+        </div>
+    </div>
+</section>
+
+<section>
+    <h2>Ferramentas de desenvolvimento</h2>
+    <p>
+        O uso de ferramentas é fundamental para auxiliar o processo de desenvolvimento de software.
+    </p>
+    <ol>
+        <li>Compiladores</li>
+        <li>Gerenciadores de depedências</li>
+        <li>Simuladores</li>
+        <li>Implantação automatizada</li>
+        <li>Teste</li>
+        <li>etc...</li>
+    </ol>
+</section>
+
+<section>
+    <h2>Sistemas de build</h2>
+    <p>
+        <b>Objetivo:</b> automatizar o processo de compilação de <b>todo o sistema</b>, deixando-o pronto para uso.
+    </p>
+    <ol>
+        <li>GNU Make</li>
+        <li>Apache Ant</li>
+        <li>Apache Maven</li>
+        <li>Gulp</li>
+        <li>Grunt</li>
+        <li><b>Gradle</b></li>
+    </ol>
+</section>
+
+<section>
+    <h2>Gradle</h2>
+    <ul>
+        <li>Sistema de build baseado nos sistemas Apache Ant e Maven</li>
+        <li>Arquivos de configuração descritos em uma linguagem derivada do Groovy</li>
+        <li>Automatiza todo o ciclo de construção e implantação do sistema</li>
+    </ul>
+    <p>
+        <b>"Gradle helps teams build, automate and deliver better software, faster."</b>
+    </p>
+</section>
+
+<section>
+    <h2>Gradle &amp; Android</h2>
+    <img data-src="./img/07-gradle/build-process.png" style="max-height: 100vh;" alt="">
+</section>
+
+<section>
+    <h2>Gradle &amp; Android</h2>
+    <p>O Gradle é configurado para auxiliar nas seguintes tarefas:</p>
+    <ol>
+        <li><b>Tipos de build:</b> Diferentes configurações podem ser definidas para cada build (debug e release)</li>
+        <li><b>Flavors:</b> Diferentes versões do mesmo aplicativo podem ser criados simultâneamente</li>
+        <li><b>Dependências:</b> Gerenciamento de dependências internas e externas a aplicação</li>
+        <li><b>Signing:</b> Permite configurar as chaves a serem utilizadas para assinatura dos apps</li>
+        <li><b>Redução de código:</b> Realiza a minificação e obfuscação do código implementado</li>
+        <li><b>Suporte a múltiplos APKs:</b> Permite a geração de vários APKs a partir do mesmo processo de build</li>
+    </ol>
+</section>
+
+<section>
+    <h2>Os arquivos <code>*.gradle</code></h2>
+    <div style="display: flex; justify-content: center; align-items: center;">
+        <div>
+            <table>
+                <tr>
+                    <td><b>Arquivo</b></td>
+                    <td><b>Propósito</b></td>
+                </tr>
+                <tr>
+                    <td><code>MyApp/build.gradle</code></td>
+                    <td>
+                        Define as configurações de build que serão aplicadas a todos os módulos pertencentes ao projeto.
+                    </td>
+                </tr>
+                <tr>
+                    <td><code>MyApp/settings.gradle</code></td>
+                    <td>
+                        Indica ao Gradle quais módulos ele deve incluir no momento de fazer o build do app.
+                    </td>
+                </tr>
+                <tr>
+                    <td><code>MyApp/app/build.gradle</code></td>
+                    <td>
+                        Define as configurações de build que serão aplicadas especificamente para o módulo em questão.
+                        Pode inclusive sobrescrever propriedades do <code>build.gradle</code> do projeto.
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div style="width: 80%; margin-left: 5%">
+            <img data-src="./img/07-gradle/project-structure.png" alt="">
+        </div>
+    </div>
+</section>
+
+<section>
+    <h2>Gerenciamento de Repositórios</h2>
+    <ul>
+        <li>Para se utilizar bibliotecas externas em nosso programa, primeiramente deve-se fornecer os repositórios por onde o gradle irá buscá-las</li>
+        <li>Utiliza-se a propriedade <code>repositories</code></li>
+        <li>Por padrão, é incluído a busca no repositório Maven JCenter (http://jcenter.bintray.com)</li>
+        <li>Contudo, é possível especificar repositórios internos remotos e locais</li>
+    </ul>
+</section>
+
+<section>
+    <h2>Gerenciamento de Repositórios</h2>
+    <pre data-file="MyApp/build.gradle"><code data-trim data-noescape class="groovy" >
+    repositories {
+        google() // Android Studio 3.0 em diante
+        mavenCentral()
+        jcenter()
+        maven { url "file://c:/android/local-repo" }
+        maven { url "http://192.168.0.100:8081/repositories/remote-repo"}
+    }
+    </code></pre>
+</section>
+
+<section>
+    <div style="max-width: 80%; margin: auto;">
+        <h2>Trabalhando com Módulos</h2>
+        <ul>
+            <li>
+                O uso de módulos é um princípio fundamental por permitir o reúso de código entre diferentes aplicações.
+            </li>
+            <li>
+                Em Android, os módulos podem ser compilados e executados separadamente
+            </li>
+            <li>
+                Podem conter código referente a diferentes devices (Android Wear, TV, Glass, etc)
+            </li>
+            <li>Podem conter código a ser reutilizado nos demais módulos do projeto</li>
+        </ul>
+    </div>
+    <!-- <img data-src="./img/07-gradle/new-module-menu.png" alt=""> -->
+</section>
+
+<section>
+    <h2>Trabalhando com Módulos</h2>
+    <p>
+        Você pode criar módulos independentes diretamente pelo Android Studio:
+    </p>
+    <ol>
+        <li><i>File</i> > <i>New Module</i></li>
+        <li>Selecionar a opção <i>Android Library</i></li>
+        <li>Configurar o arquivo <code>MyApp/app/build.gradle</code> para que ele importe o módulo criado</li>
+    </ol>
+</section>
+
+<section>
+    <h2>Trabalhando com Módulos</h2>
+    <div style="display: flex; justify-content: center; align-items: center;">
+        <div style="width: 60%;">
+            <pre data-file="MyApp/app/build.gradle"><code data-trim data-noescape class="groovy">
+                dependencies {
+                    implementation project(":MyLibrary") // minha dependência local
+                    
+                    implementation 'androidx.appcompat:appcompat:1.3.0'
+                    implementation 'com.google.android.material:material:1.4.0'
+                    // ... demais dependências do app
+                }
+            </code></pre>
+            <pre data-file="MyApp/app/MainActivity.java"><code data-trim data-noescape class="java">
+                protected void onCreate(Bundle savedInstanceState) {
+                    // ...
+                    LibraryClass newLib = new LibraryClass();
+                    // ...
+                }
+            </code></pre>
+        </div>
+        <div style="width: 30%; margin-left: 5%;">
+            <img data-src="./img/07-gradle/new-module-tree.png" alt="">
+        </div>
+    </div>
+</section>
+
+<!-- <section>
+    <h2>Bibliotecas de Terceiros</h2>
+
+</section> -->
+
+<section>
+    <h2>Build Variants</h2>
+    <ul>
+        <li><b>O que é?</b> Recurso que permite criar versões diferentes do mesmo sistema para situações específicas</li>
+        <li>Pode ser utilizado em várias situações:</li>
+        <ol>
+            <li>Na disponibilização de versões free e pagas do mesmo app</li>
+            <li>Na criação de versões de teste, homologação e implantação do app</li>
+            <li>Para criação de versões customizadas do mesmo app</li>
+        </ol>
+        <li>O Gradle permite criar e customizar as build variants para o aplicativo que está sendo desenvolvido</li>
+        <li>Esse recurso está disponível via <b>build types</b> e/ou <b>product flavors</b></li>
+    </ul>
+</section>
+
+<section>
+    <h2>Build Types</h2>
+    <ul>
+        <li>Permite customizar <b>como será feito o empacotamento</b> no build da aplicação</li>
+        <li>Dessa forma, o app mantém as funcionalidades intactas</li>
+        <ul>
+            <li><b>debug:</b> Versão de desenvolvimento</li>
+            <li><b>staging:</b> Versão de homologação</li>
+            <li><b>release:</b> Versão de implantação</li>
+        </ul>
+        <li>Essas builds podem ser configuradas por meio do atributo <code>buildTypes</code></li>
+    </ul>
+</section>
+
+<section>
+    <h2>Build Types</h2>
+    <pre data-file="MyApp/app/build.gradle"><code data-trim data-noescape class="groovy" style="max-height: 100%;">
+        apply plugin: 'com.android.application'
+
+        android {
+            ...
+            defaultConfig { ... }
+            buildTypes {
+                release {
+                    minifyEnabled true
+                    proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+                }
+                debug {
+                    minifyEnabled false
+                    applicationIdSuffix ".debug"
+                    debuggable true
+                }
+            }
+        }
+    </code></pre>
+</section>
+
+<section>
+    <h2>Flavors</h2>
+    <ul>
+        <li>Permite <b>definir quais recursos</b> serão empacotados no build da aplicação</li>
+        <li>Dessa forma, é possível disponibilizar o mesmo app, porém com pequenas variações</li>
+        <ul>
+            <li>Versões free e pagas</li>
+            <li>Versões demo e completas</li>
+            <li>Versões para públicos distintos (<a href="https://play.google.com/store/search?q=banco%20bmg&c=apps">Banco BMG Clubes</a>)</li>
+        </ul>
+        <li>Essas versões podem ser customizadas pelo atributo <code>productFlavors</code></li>
+    </ul>
+</section>
+
+<section>
+    <h2>Flavors</h2>
+    <pre data-file="MyApp/app/build.gradle"><code data-trim data-noescape class="groovy" style="max-height: fit-content;">
+        apply plugin: 'com.android.application'
+
+        android {
+            ...
+            defaultConfig { ... }
+            buildTypes { ... }
+    
+            flavorDimensions "version"
+            productFlavors {
+                free {
+                    applicationIdSuffix ".free"
+                    dimension "version"
+                }
+
+                paid {
+                    applicationIdSuffix ".paid"
+                    dimension "version"
+                }
+            }
+        }
+    </code></pre>
+</section>
+
+<section>
+    <div style="display: flex; justify-content: center; align-items: center;">
+        <div>
+            <h2>Flavors</h2>
+            <p>
+                <b>Como definir quais recursos serão carregados em cada flavor?</b>
+            </p>
+            <ul>
+                <li>Essa separação acontece de forma física</li>
+                <li>Cria-se subdiretórios contendo arquivos específicos para cada flavor, que serão carregados automatimcante durante o build</li>
+                <ol>
+                    <li><code>/MyApp/app/src/&lt;flavor&gt;/res</code></li>
+                    <li><code>/MyApp/app/src/&lt;flavor&gt;/java</code></li>
+                    <li><code>/MyApp/app/src/&lt;flavor&gt;/...</code></li>
+                </ol>
+            </ul>
+        </div>
+        <div>
+            <img data-src="./img/07-gradle/flavors-tree.png" alt="">
+        </div>
+    </div>
+</section>
+
+<section>
+    <h2>Escolhendo a versão a ser executada</h2>
+    <div style="display: flex; justify-content: center; align-items: center;">
+        <div>
+            <ol>
+               <li>Acessar o painel Build Variants</li> 
+               <li>Selecionar a versão desejada</li>
+               <ol>
+                   <li>Será uma combinação entre <b>build types</b> e <b>product flavors</b></li>
+                   <li>A escolha se dá para cada módulo para cada módulo</li>
+               </ol>
+               <li>Sincronize o Gradle, se necessário</li>
+               <li>Execute o projeto</li>
+            </ol>
+        </div>
+        <div>
+            <img src="./img/07-gradle/build-variants.png" style="margin-left: 5%;" alt="">
+        </div>
+    </div>
+</section>
+
+<section class="reference">
+    <h2>Referências</h2>
+    <ul>
+        <li><a href="https://gradle.org/">Gradle: official website</a>
+        </li>
+        <li><a href="https://developer.android.com/studio/build/">Android Guides: Configure your build</a></li>
+    </ul>
+</section>

@@ -1,0 +1,316 @@
+<section class="title" data-background="img/coltec.png" data-state="blur">
+    <h3>COLTEC/UFMG</h3>
+    <h1>Recursos do Aplicativo</h1>
+    <h3>João Eduardo Montandon</h3>
+</section>
+
+<section>
+    <h2>App = Interface + Funcionalidades</h2>
+    <ol>
+        <li>Funcionalidades: Java!</li>
+        <li>Interface: ????</li>
+    </ol>
+</section>
+
+<section>
+    <div style="float: left; width: 70%;">
+        <h2>Recursos</h2>
+        <ul>
+            <li>Arquivos adicionais contendo informações pré-definidas a ser utilizada para organizar a interface do app</li>
+            <li>Incluem: bitmaps, layouts, preferências de interface, animações, texto, etc.</li>
+            <li>Presentes na pasta <code>res</code></li>
+        </ul>
+    </div>
+    <div style="float: right; width: 30%;">
+        <img data-src="img/03-res/exemplo-res.png" alt="" style="width: 80%;">
+    </div>
+</section>
+
+<section>
+    <h2>Os recursos suportados</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Pasta</th>
+                <th>Recurso suportado</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="fragment fade-out" data-fragment-index="1">
+                <td><code>animator</code></td>
+                <td>Propriedades de animações</td>
+            </tr>
+            <tr class="fragment fade-out" data-fragment-index="1">
+                <td><code>anim</code></td>
+                <td>Animações de interface</td>
+            </tr>
+            <tr class="fragment fade-out" data-fragment-index="1">
+                <td><code>color</code></td>
+                <td>Paleta de cores a ser utilizada no aplicativo</td>
+            </tr>
+            <tr class="fragment fade-out" data-fragment-index="1">
+                <td><code>mipmap</code></td>
+                <td>Ícones a serem utilizados no app</td>
+            </tr>
+            <tr>
+                <mark>
+                    <td><code>drawable</code></td>
+                    <td>Arquivos de imagem (em formato tradicional ou XML)</td>
+                </mark>
+            </tr>
+            <tr>
+                <td><code>layout</code></td>
+                <td>Arquivos de layout</td>
+            </tr>
+            <tr class="fragment fade-out" data-fragment-index="1">
+                <td><code>menu</code></td>
+                <td>Definição de listas e menu</td>
+            </tr>
+            <tr class="fragment fade-out" data-fragment-index="1">
+                <td><code>raw</code></td>
+                <td>Outros tipos de recursos</td>
+            </tr>
+            <tr>
+                <td><code>value</code></td>
+                <td>Valores e propriedades textuais simples, como texto, números, tamanhos, cores de componentes, etc</td>
+            </tr>
+            <tr class="fragment fade-out" data-fragment-index="1">
+                <td><code>xml</code></td>
+                <td>Outros arquivos XML a serem utilizados no app, ex: configurações</td>
+            </tr>
+            <tr class="fragment fade-out" data-fragment-index="1">
+                <td><code>font</code></td>
+                <td>Fontes textuais</td>
+            </tr>
+        </tbody>
+    </table>
+</section>
+
+<section>
+    <h2><code>layout</code></h2>
+    <div style="float: left; width: 70%;">
+        <ul>
+            <li>Armazena todos os arquivos de UI utilizados no aplicativo (layout, componentes, etc)</li>
+            <li>Pode ser recuperado via código pela variável <code>R.layout.nome_do_arquivo</code></li>
+        </ul>
+    </div>
+    <div style="float: right; width: 30%;">
+        <img data-src="img/03-res/layout-folder.png" alt="" style="width: 80%">
+    </div>
+</section>
+
+<section>
+    <h2><code>value</code></h2>
+    <ul>
+        <li>Contém a definição de valores básicos a serem utilizados no aplicativo, como <code>string</code>, <code>color</code>, e <code>dimension</code></li>
+        <li>Convenção: cria-se um arquivo por tela/componente</li>
+        <li>Nomenclatura: <code>&lt;tipo do recurso&gt;_&lt;nome da tela&gt;.xml</code></li>
+    </ul>
+</section>
+
+<section>
+    <h2><code>value: strings</code></h2>
+    <div>
+        <pre data-file="strings_activity_main.xml"><code data-trim data-noescape class="xml">
+            &lt;resources&gt;
+                <mark>&lt;string name="welcome_msg"&gt;Olá!!&lt;/string&gt;</mark>
+                &lt;string name="action_settings"&gt;Preferências&lt;/string&gt;
+            &lt;/resource&gt;
+        </code></pre>
+    </div>
+    <div>
+        <pre data-file="activity_main.xml"><code data-trim data-noescape class="xml">
+            &lt;TextView <mark>android:text="@string/welcome_msg"</mark> 
+                android:layout_width="wrap_content" 
+                android:layout_height="wrap_content"
+                android:textSize="18dp" /&gt;
+        </code></pre>
+    </div>
+</section>
+
+<section>
+    <h2><code>value: colors</code></h2>
+    <p>
+        Pode ser definida por arquivo e/ou por aplicação.
+    </p>
+    <div>
+        <pre data-file="colors.xml"><code data-trim data-noescape class="xml">
+            &lt;?xml version="1.0" encoding="utf-8"?&gt;
+            &lt;resources&gt;
+                &lt;color name="text_dark"&gt;#252525&lt;/color&gt;
+                &lt;color name="text_light"&gt;#DEDEDE&lt;/color&gt;
+                <mark>&lt;color name="text_warn"&gt;#FF0000&lt;/color&gt;</mark>
+            &lt;/resources&gt;
+        </code></pre>
+    </div>
+    <div>
+        <pre data-file="activity_main.xml"><code data-trim data-noescape class="xml">
+            &lt;TextView android:text="@string/welcome_msg"
+                <mark>android:textColor="@color/text_warn"</mark>
+                android:layout_width="wrap_content" 
+                android:layout_height="wrap_content"
+                android:textSize="18dp" /&gt;
+        </code></pre>
+    </div>
+</section>
+
+<section>
+    <h2><code>value: dimension</code></h2>
+    <p>
+        Assim como as cores, pode ser definida por arquivo e/ou por aplicação.
+    </p>
+    <div>
+        <pre data-file="dimens.xml"><code data-trim data-noescape class="xml">
+            &lt;resources&gt;
+                &lt;dimen name="activity_horizontal_margin"&gt;16dp&lt;/dimen&gt;
+                &lt;dimen name="activity_vertical_margin"&gt;16dp&lt;/dimen&gt;
+                <mark>&lt;dimen name="default_margin"&gt;8dp&lt;/dimen&gt;</mark>
+            &lt;/resources&gt;
+        </code></pre>
+    </div>
+    <div>
+        <pre data-file="activity_main.xml"><code data-trim data-noescape class="xml">
+            &lt;TextView android:text="@string/welcome_msg"
+                android:textColor="@color/text_warn"
+                android:layout_width="wrap_content" 
+                android:layout_height="wrap_content"
+                <mark>android:layout_margin="@dimen/default_margin"</mark>
+                android:textSize="18dp" /&gt;
+        </code></pre>
+    </div>
+</section>
+
+<section>
+    <h2><code>drawable</code></h2>
+    <ul>
+        <li>Pasta reservada para armazenar imagens que serão utilizadas pelo aplicativo</li>
+        <li>Cada arquivo representa uma imagem específica</li>
+        <li>As imagens podem ser representados por arquivos de imagens tradicionais (png, jpg, etc) ou XML</li>
+        <li>Pode ser recuperado via código pela variável <code>R.drawable.nome_do_arquivo</code></li>
+        <li>Pode ser recuperado via XML pela variável <code>@drawable/nome_do_arquivo</code></li>
+    </ul>
+</section>
+
+<section data-background="img/03-res/drawable-bitmap-example.png" data-background-position="right" data-background-size="30%">
+    <div style="width: 70%;">
+        <h2><code>drawable</code></h2>
+        <pre data-file="activity_main.xml"><code data-trim data-noescape class="xml">
+            &lt;ImageView    
+                android:layout_height="wrap_content"    
+                android:layout_width="wrap_content"    
+                <mark>android:src="@drawable/ic_error"</mark> /&gt;
+        </code></pre>
+    </div>
+</section>
+
+<section>
+    <h2>Mas e se...</h2>
+    <p>Meu app estiver sendo visualizado na horizontal?</p>
+    <p>O usuário for de outro país?</p>
+    <p>O app tiver sido instalado em um tablet?</p>
+    <p>O usuário está usando um tema escuro/claro?</p>
+</section>
+
+<section>
+    <h2>Recursos Alternativos</h2>
+    <p>
+        Permite a declaração de diferentes arquivos de recursos de acordo com a especificação do device.
+    </p>
+    <img data-src="img/03-res/alternative-resources-example.png" style="width: 30%;" alt="">
+</section>
+
+<section>
+    <h2>Recursos Alternativos</h2>
+    <table>
+        <tr>
+            <td><b>Configuração</b></td>
+            <td><b>Exemplo</b></td>
+            <td><b>Descrição</b></td>
+        </tr>
+        <tr>
+            <td>Língua e Região</td>
+            <td><code>en</code>, <code>fr</code>, <code>pt-br</code>, etc</td>
+            <td>Recursos disponíveis de acordo com a língua adotada no dispositivo</td>
+        </tr>
+        <tr>
+            <td>Menor Largura</td>
+            <td><code>w720dp</code>, <code>w480dp</code>, <code>w&lt;N&gt;dp</code></td>
+            <td>Carrega o arquivo referente a menor largura válida para a tela</td>
+        </tr>
+        <tr>
+            <td>Modo de UI</td>
+            <td><code>car</code>, <code>desk</code>, <code>television</code>, etc</td>
+            <td>Recursos são disponibilizados de acordo com o modo de exibição do app</td>
+        </tr>
+        <tr>
+            <td>Densidade de Tela</td>
+            <td><code>ldpi</code>, <code>mdpi</code>, <code>hdpi</code>, etc</td>
+            <td>Arquivo de recursos é selecionado de acordo com a densidade de pixels da tela</td>
+        </tr>
+    </table>
+    <!-- <caption>Mais opções <a href="https://developer.android.com/guide/topics/resources/providing-resources#AlternativeResources">aqui</a></caption> -->
+</section>
+
+<section>
+    <h2>Recursos alternativos</h2>
+    <ul>
+        <li>
+            São configurados por diretórios com nomenclatura específica: <br>
+            <code>res/&lt;tipo de recurso&gt;-&lt;tipo de configuração&gt;/</code>
+        </li>
+        <li>Devem estar dentro da pasta <code>res/</code></li>
+        <li>Devem ser usados em conjunto com as configurações default (ex: <code>values/</code> e <code>values-en/</code>)</li>
+    </ul>
+</section>
+
+<section>
+    <h2>Exemplo: Internacionalização</h2>
+</section>
+
+<section>
+    <h2>Internacionalização</h2>
+    <p>O Android possui suporte nativo a internacionalização</p>
+    <p>Para isso, basta criar um arquivo <code>strings.xml</code> por idioma</p>
+    <p>O arquivo <code>strings.xml</code> contém a lista de mensagens a serem traduzidas</p>
+</section>
+
+<section id="i18nExample">
+    <style>
+        #i18nExample .left {
+            float: left;
+            width: 70%;
+        }
+
+        #i18nExample img {
+            position: fixed;
+            right: 0%;
+            top: 0%;
+        }
+    </style>
+    <div class="left">
+        <h2>Internacionalização</h2>
+        <pre data-file="/res/values/strings.xml"><code data-trim data-noescape class="xml">
+            &lt;resources&gt;
+                &lt;string name="btn_enviar"&gt;Send&lt;/string&gt;
+                &lt;string name="lbl_nome"&gt;Name:&lt;/string&gt;
+                &lt;string name="chk_emails"&gt;Receive e-mails&lt;/string&gt;
+            &lt;/resources&gt;        
+        </code></pre>
+        <pre data-file="/res/values-pt/strings.xml"><code data-trim data-noescape class="xml">
+            &lt;resources&gt;
+                &lt;string name="btn_enviar"&gt;Enviar&lt;/string&gt;
+                &lt;string name="lbl_nome"&gt;Nome:&lt;/string&gt;
+                &lt;string name="chk_emails"&gt;Receber e-mails&lt;/string&gt;
+            &lt;/resources&gt;        
+        </code></pre>
+    </div>
+    <img data-src="img/03-res/i18n.png" alt="">
+</section>
+
+<section class="reference">
+    <h2>Referência</h2>
+    <ul>
+        <li><a href="https://developer.android.com/guide/topics/resources/providing-resources">Android Guides: Visão Geral dos Recursos</a></li>
+        <li><a href="https://www.codeproject.com/articles/810940/android-resources-beginner-s-guide-to-organizing-a">Android Resources - Beginner’s Guide to Organizing/Accessing Android Resources</a></li>
+    </ul>
+</section>
